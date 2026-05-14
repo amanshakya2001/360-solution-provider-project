@@ -1,217 +1,65 @@
-# 360 Solution Provider — V2.0
+# 360 Solution Provider
 
-A modern web platform connecting engineering students with professionals for technical and educational solutions. Built with HTML5, CSS3, vanilla JavaScript, and Bootstrap 5 — no build tools required.
-
----
-
-## Table of Contents
-
-- [Overview](#overview)
-- [Features](#features)
-- [Project Structure](#project-structure)
-- [Tech Stack](#tech-stack)
-- [Getting Started](#getting-started)
-- [Pages & Navigation](#pages--navigation)
-- [Google Sheets Integration](#google-sheets-integration)
-- [Team](#team)
-- [Architecture Notes](#architecture-notes)
-
----
-
-## Overview
-
-360 Solution Provider is a student-focused service platform that connects engineering students with professionals across Computer Science, Mechanical Engineering, and Education. Users can browse service categories, submit queries, write reviews, and explore the team — all without any backend server.
-
----
+A multi-page service portal for engineering students to browse, query, and review professional technical and educational solutions across Computer Science, Mechanical Engineering, and Academia.
 
 ## Features
 
-- **Service Categories** — Computer, Mechanical, and Educational services with query submission saved to Google Sheets
-- **Reviews** — Star rating system (1–5) with name and comment, fetched from and saved to Google Sheets in real time
-- **Help Center** — Live-search Bootstrap accordion FAQ + support contact cards
-- **About Us** — Founder spotlight and core team grid with hover animations
-- **Responsive Sidebar** — Collapsible on desktop, slide-in drawer on mobile with overlay backdrop
-- **Toast Notifications** — Slide-in feedback toasts for all user actions
-- **Favicon** — SVG favicon with violet gradient and "360" text
+- **SPA shell with iframe navigation** — persistent sidebar and topbar stay in place while page content loads in a managed iframe without full-page reloads
+- **Collapsible sidebar** — slide-in navigation with active-link highlighting and an overlay backdrop for mobile
+- **Home page** — hero section, animated student-count stat card (counts to 500+), service overview cards with technology tags, about section, and customer testimonials
+- **Categories page** — three service categories (Computer Services, Mechanical Services, Educational Services), each exposing individual service pills that open a query modal
+- **Query submission** — modal form collects email and query description, validates inputs client-side, and posts the request asynchronously to a Google Apps Script backend (Google Sheets integration)
+- **Reviews page** — star-rating widget (1–5), name and comment fields, and live submission to the same Google Apps Script endpoint; existing reviews rendered from the sheet
+- **About Us page** — team and mission information
+- **Help page** — FAQ / support content
+- **Toast notifications** — non-blocking success/error feedback after form submissions
+- **Social links** — Twitter/X, LinkedIn, Instagram in sidebar footer
 
----
+## Tech Stack
+
+- HTML5, CSS3 (custom properties, CSS Grid, Flexbox)
+- Bootstrap 5.3
+- Bootstrap Icons 1.11
+- Google Fonts (Inter)
+- Vanilla JavaScript (ES6+)
+- Google Apps Script (serverless backend — query and review persistence to Google Sheets)
+
+## Getting Started
+
+### Prerequisites
+
+- A modern web browser (Chrome, Firefox, Edge)
+- No build tools required
+
+### Installation / Setup
+
+1. Clone or download the repository.
+
+2. Open `index.html` in a browser. All pages load via the iframe shell — no server required for browsing.
+
+3. To enable query and review submissions, deploy a Google Apps Script Web App to your own Google account and replace the `SHEET_URL` constant in `pages/category.html` and `pages/review.html`:
+   ```javascript
+   const SHEET_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
+   ```
 
 ## Project Structure
 
 ```
-360-solution-provider-v1-project/
-├── index.html              # Shell — topbar, sidebar, iframe, toast container
-├── favicon.svg             # SVG favicon
-├── README.md
-│
+360-solution-provider-project/
+├── index.html              # App shell — topbar, sidebar, and iframe container
+├── favicon.svg             # Brand logo / favicon
 ├── pages/
-│   ├── home.html           # Hero, animated stats, services, testimonials, footer
-│   ├── category.html       # Service pills + query modal (saves to Google Sheets)
-│   ├── review.html         # Star rating form + review list (Google Sheets)
-│   ├── about-us.html       # Founder spotlight + team grid
-│   └── help.html           # FAQ accordion with live search
-│
+│   ├── home.html           # Landing page with hero, stats, services, testimonials
+│   ├── category.html       # Service category cards with query submission modal
+│   ├── review.html         # Star-rating review form and review feed
+│   ├── about-us.html       # Team and mission page
+│   └── help.html           # FAQ / help page
 └── assest/
-    ├── images/             # All images — logos, avatars, category icons
-    │   ├── logo.png
-    │   ├── vikas.JPG
-    │   ├── aman.jpg
-    │   ├── tarun.jpeg
-    │   ├── animesh.jpeg
-    │   ├── astha.jpg
-    │   ├── avtar.jpeg
-    │   ├── back.jpg
-    │   ├── cat1.png – cat3.png
-    │   └── 1.jpg – 7.jpg
-    ├── css/
-    │   ├── index.css       # Shell styles — topbar, sidebar, overlay, toasts
-    │   ├── home.css        # Home page — hero, stats, services, footer
-    │   ├── category.css    # Categories — service pills, query modal
-    │   ├── review.css      # Reviews — star buttons, review cards
-    │   ├── about-us.css    # About — founder card, team grid
-    │   └── help.css        # Help — banner, search, FAQ accordion
-    └── js/
-        └── index.js        # Navigation, sidebar toggle, toast system
+    ├── css/                # Per-page stylesheets (index.css, home.css, category.css, etc.)
+    ├── js/                 # App-shell navigation logic (index.js)
+    └── images/             # Category icons and other imagery
 ```
 
----
+## License
 
-## Tech Stack
-
-| Layer | Technology |
-|-------|------------|
-| Markup | HTML5 |
-| Styling | CSS3 + Bootstrap 5.3.3 |
-| Icons | Bootstrap Icons 1.11.3 |
-| Typography | Google Fonts — Inter (400–800) |
-| Scripting | Vanilla JavaScript (ES2017) |
-| Storage | Google Sheets (via Apps Script Web App) |
-| Version Control | Git / GitHub |
-
----
-
-## Getting Started
-
-No installation or build step required.
-
-### Option 1 — VS Code Live Server (Recommended)
-
-1. Open the project folder in VS Code
-2. Install the [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) extension
-3. Right-click `index.html` → **Open with Live Server**
-
-### Option 2 — Python HTTP Server
-
-```bash
-cd 360-solution-provider-v1-project
-python -m http.server 8000
-# Open http://localhost:8000
-```
-
-### Option 3 — Direct File
-
-Open `index.html` directly in any modern browser.
-
----
-
-## Pages & Navigation
-
-The app uses an **iframe-based architecture** — `index.html` is the persistent shell and loads content pages into `<iframe id="frame1">`. The sidebar and topbar stay fixed while only the content changes.
-
-| Page | File | Description |
-|------|------|-------------|
-| Home | `pages/home.html` | Hero, animated stats, service cards, testimonials, footer |
-| Categories | `pages/category.html` | Browse services, submit queries to Google Sheets |
-| Reviews | `pages/review.html` | Write reviews and view all reviews from Google Sheets |
-| About Us | `pages/about-us.html` | Founder spotlight and core team profiles |
-| Help | `pages/help.html` | Live-search FAQ accordion and support contact |
-
----
-
-## Google Sheets Integration
-
-Reviews and queries are stored in a Google Sheet via a Google Apps Script Web App deployed as a public endpoint.
-
-### Setup
-
-1. Create a Google Sheet with two tabs named **`Reviews`** and **`Queries`**
-2. Add headers:
-   - **Reviews:** `Timestamp | Name | Rating | Comment | Date`
-   - **Queries:** `Timestamp | Service | Email | Message | Date`
-3. Go to **Extensions → Apps Script**, paste the script below, and deploy as a Web App (Execute as: Me, Access: Anyone)
-4. Copy the Web App URL and replace `YOUR_APPS_SCRIPT_URL_HERE` in:
-   - `pages/review.html` — `const SHEET_URL = '...'`
-   - `pages/category.html` — `const SHEET_URL = '...'`
-
-### Apps Script
-
-```javascript
-function doGet(e) {
-  const sheet   = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Reviews');
-  const rows    = sheet.getDataRange().getValues();
-  const reviews = rows.slice(1).reverse().map(row => ({
-    timestamp: row[0],
-    name:      row[1],
-    rating:    parseInt(String(row[2])) || 0,
-    comment:   row[3],
-    date:      row[4]
-  }));
-  return ContentService
-    .createTextOutput(JSON.stringify({ reviews }))
-    .setMimeType(ContentService.MimeType.JSON);
-}
-
-function doPost(e) {
-  const ss   = SpreadsheetApp.getActiveSpreadsheet();
-  const data = JSON.parse(e.postData.contents);
-  if (data.type === 'query') {
-    ss.getSheetByName('Queries').appendRow([
-      new Date().toLocaleString('en-IN'), data.service, data.email, data.message, data.date
-    ]);
-  } else {
-    ss.getSheetByName('Reviews').appendRow([
-      new Date().toLocaleString('en-IN'), data.name, data.rating, data.comment, data.date
-    ]);
-  }
-  return ContentService
-    .createTextOutput(JSON.stringify({ status: 'ok' }))
-    .setMimeType(ContentService.MimeType.JSON);
-}
-```
-
----
-
-## Team
-
-| Name | Role |
-|------|------|
-| Vikas Gola | Founder |
-| Aman Shakya | Co-Founder & CTO |
-| Tarun Gupta | Co-Founder, Design Manager |
-| Taruwarsh Kumar | Senior Developer |
-| Animesh Dixit | Senior Graphic Designer |
-| Astha Verma | Social Media Manager |
-| Nazia Fareen | Content Head |
-
----
-
-## Architecture Notes
-
-- **Iframe navigation** — Content pages load into a central iframe; `navigate(page)` in `index.js` sets the `src` and updates the active nav link.
-- **Sidebar** — CSS `transform: translateX` driven by `body.sidebar-open` (mobile) and `body.sidebar-collapsed` (desktop). Overlay backdrop on mobile.
-- **No authentication** — Login and profile features were removed. The platform is fully public.
-- **Google Sheets as database** — `fetch()` with `mode: no-cors` for POST (fire-and-forget), standard GET for reading reviews.
-- **Relative timestamps** — Review dates use a `timeAgo()` helper (Just now / 2 hr ago / 3 days ago).
-- **No build step** — All assets are served as-is. Deploy the project root to any static host.
-
----
-
-## Deployment
-
-Deploy the project root to any static hosting service:
-
-- [GitHub Pages](https://pages.github.com/)
-- [Netlify](https://netlify.com/)
-- [Vercel](https://vercel.com/)
-
-No server configuration or environment variables required.
+MIT
